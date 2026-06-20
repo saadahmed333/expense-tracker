@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lab Report – Customer Record Management System</title>
+<style>
+  /* ── Page & Typography ── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 13.5pt;
+    color: #1a1a2e;
+    background: #fff;
+    line-height: 1.7;
+  }
+  @media print {
+    .page-break { page-break-before: always; }
+    body { font-size: 12pt; }
+  }
+
+  /* ── Cover Page ── */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 40px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #2563eb 100%);
+    color: white;
+  }
+  .cover .university { font-size: 13pt; letter-spacing: 2px; text-transform: uppercase; opacity: .75; margin-bottom: 40px; }
+  .cover .badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 999px;
+    padding: 6px 20px;
+    font-size: 11pt;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .cover h1 { font-size: 32pt; font-weight: 800; line-height: 1.15; margin-bottom: 20px; }
+  .cover h1 span { color: #60a5fa; }
+  .cover .subtitle { font-size: 14pt; opacity: .8; margin-bottom: 60px; }
+  .cover .meta-table { width: 480px; border-collapse: collapse; text-align: left; }
+  .cover .meta-table td { padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.12); font-size: 11.5pt; }
+  .cover .meta-table td:first-child { color: #93c5fd; font-weight: 600; width: 160px; }
+  .cover .footer-note { margin-top: 60px; font-size: 10pt; opacity: .45; }
+
+  /* ── Content Wrapper ── */
+  .content { max-width: 860px; margin: 0 auto; padding: 60px 40px; }
+
+  /* ── Headings ── */
+  h2.section-title {
+    font-size: 18pt;
+    font-weight: 700;
+    color: #1e3a5f;
+    border-left: 5px solid #2563eb;
+    padding-left: 14px;
+    margin: 48px 0 20px;
+  }
+  h3.subsection {
+    font-size: 13.5pt;
+    font-weight: 700;
+    color: #2563eb;
+    margin: 28px 0 10px;
+  }
+  h4.minor { font-size: 12pt; font-weight: 600; color: #374151; margin: 20px 0 8px; }
+
+  /* ── Paragraph & List ── */
+  p { margin-bottom: 12px; color: #374151; }
+  ul, ol { margin: 8px 0 14px 26px; color: #374151; }
+  li { margin-bottom: 5px; }
+  strong { color: #1a1a2e; }
+
+  /* ── TOC ── */
+  .toc { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 28px 32px; margin: 32px 0; }
+  .toc h3 { font-size: 13pt; font-weight: 700; color: #1e3a5f; margin-bottom: 16px; }
+  .toc ol { margin-left: 18px; }
+  .toc li { margin-bottom: 6px; font-size: 12pt; }
+  .toc a { color: #2563eb; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* ── Info Box ── */
+  .info-box {
+    background: #eff6ff;
+    border-left: 4px solid #2563eb;
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin: 16px 0;
+    font-size: 12.5pt;
+    color: #1e40af;
+  }
+
+  /* ── Code Block ── */
+  pre {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-radius: 10px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+    font-size: 10.5pt;
+    line-height: 1.65;
+    margin: 16px 0 24px;
+    border: 1px solid #1e293b;
+  }
+  code {
+    background: #f1f5f9;
+    color: #dc2626;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-family: 'Consolas', 'Monaco', monospace;
+    font-size: 10.5pt;
+  }
+  pre code { background: none; color: inherit; padding: 0; font-size: inherit; }
+
+  /* Syntax highlight colors */
+  .kw  { color: #93c5fd; }   /* keywords */
+  .ty  { color: #6ee7b7; }   /* types */
+  .st  { color: #fca5a5; }   /* strings */
+  .cm  { color: #64748b; font-style: italic; } /* comments */
+  .fn  { color: #fde68a; }   /* functions */
+  .nu  { color: #fb923c; }   /* numbers */
+  .at  { color: #c4b5fd; }   /* attributes/tags */
+  .hl  { color: #f8fafc; }
+
+  /* ── Code label ── */
+  .code-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: -6px;
+  }
+  .code-label span {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #64748b;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .code-file {
+    display: inline-block;
+    background: #2563eb;
+    color: white;
+    font-size: 9.5pt;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 5px;
+    font-family: 'Consolas', monospace;
+  }
+
+  /* ── Screenshots ── */
+  .screenshot-box {
+    margin: 20px 0 32px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  }
+  .screenshot-box .ss-label {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 9px 16px;
+    font-size: 10.5pt;
+    font-weight: 600;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ss-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .screenshot-box img {
+    width: 100%;
+    display: block;
+  }
+  .screenshot-box .ss-caption {
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    padding: 8px 16px;
+    font-size: 10pt;
+    color: #64748b;
+    text-align: center;
+    font-style: italic;
+  }
+
+  /* Missing image placeholder */
+  .img-placeholder {
+    background: #f1f5f9;
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 12pt;
+  }
+  .img-placeholder svg { opacity: .4; }
+
+  /* ── Arch Diagram ── */
+  .arch-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 20px 0;
+  }
+  .arch-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+  }
+  .arch-card .arch-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 10px;
+    font-size: 20px;
+  }
+  .arch-card h4 { font-size: 11.5pt; font-weight: 700; color: #1e3a5f; margin-bottom: 6px; }
+  .arch-card p  { font-size: 10.5pt; color: #64748b; margin: 0; }
+
+  /* ── Table ── */
+  table.report-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 12pt;
+  }
+  .report-table th {
+    background: #1e3a5f;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11pt;
+  }
+  .report-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #374151;
+  }
+  .report-table tbody tr:nth-child(even) { background: #f8fafc; }
+
+  /* ── Challenge Cards ── */
+  .challenge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .challenge-card {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+  }
+  .challenge-card .ch-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: white;
+    font-size: 11pt;
+    font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .challenge-card h4 { font-size: 11.5pt; font-weight: 700; color: #1e3a5f; margin-bottom: 5px; }
+  .challenge-card p  { font-size: 10.5pt; color: #64748b; margin: 0; }
+
+  /* ── Divider ── */
+  hr.divider { border: none; border-top: 1px solid #e2e8f0; margin: 40px 0; }
+
+  /* ── References ── */
+  .ref-item { display: flex; gap: 12px; margin-bottom: 14px; }
+  .ref-num { font-weight: 700; color: #2563eb; min-width: 26px; }
+  .ref-text { color: #374151; font-size: 12pt; }
+
+  /* ── Footer ── */
+  .report-footer {
+    background: #0f172a;
+    color: #64748b;
+    text-align: center;
+    padding: 24px;
+    font-size: 10pt;
+    margin-top: 60px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+     COVER PAGE
+════════════════════════════════════════ -->
+<div class="cover">
+  <p class="university">Department of Computer Science &amp; Information Technology</p>
+  <div class="badge">Lab Session 7 &nbsp;·&nbsp; Open-Ended Lab</div>
+  <h1>Customer Record<br/><span>Management System</span></h1>
+  <p class="subtitle">Expense Tracking Web Application using ASP.NET Core MVC</p>
+
+  <table class="meta-table">
+    <tr><td>Course</td><td>Web Technologies &amp; Applications</td></tr>
+    <tr><td>Technology</td><td>ASP.NET Core 10 &nbsp;·&nbsp; HTML5 &nbsp;·&nbsp; CSS3 &nbsp;·&nbsp; JavaScript</td></tr>
+    <tr><td>Bloom's Taxonomy</td><td>P2 &nbsp;·&nbsp; C4 &nbsp;·&nbsp; A2</td></tr>
+    <tr><td>Graduate Attributes</td><td>GA2 &nbsp;·&nbsp; GA5 &nbsp;·&nbsp; GA6</td></tr>
+    <tr><td>Total Marks</td><td>20 &nbsp;(5 + 10 + 5)</td></tr>
+    <tr><td>Date</td><td>June 20, 2026</td></tr>
+  </table>
+
+  <p class="footer-note">Submitted in partial fulfilment of the lab requirements</p>
+</div>
+
+<!-- ═══════════════════════════════════════
+     REPORT BODY
+════════════════════════════════════════ -->
+<div class="content">
+
+  <!-- Table of Contents -->
+  <div class="toc">
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#background">Background / Theory</a></li>
+      <li><a href="#design">Design &amp; System Architecture</a></li>
+      <li><a href="#code">Code Implementation</a></li>
+      <li><a href="#screenshots">Output Screenshots</a></li>
+      <li><a href="#reflection">Reflection Report</a></li>
+      <li><a href="#references">References</a></li>
+    </ol>
+  </div>
+
+  <!-- ─────────────────────────────────────
+       1. BACKGROUND / THEORY
+  ────────────────────────────────────── -->
+  <h2 class="section-title" id="background">1. Background / Theory</h2>
+
+  <p>
+    Effective personal financial management is a growing challenge in the digital age.
+    Many individuals lack accessible, user-friendly tools to track and analyse their daily
+    expenditures, often leading to overspending and financial instability. A web-based
+    expense tracker directly addresses this gap by offering a centralised platform where
+    users can log transactions, categorise them, and obtain meaningful summaries of their
+    spending behaviour.
+  </p>
+
+  <h3 class="subsection">1.1 Web Technologies Used</h3>
+
+  <div class="arch-grid">
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#eff6ff; color:#2563eb;">🌐</div>
+      <h4>HTML5</h4>
+      <p>Semantic markup for structured, accessible page content and forms.</p>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#f0fdf4; color:#16a34a;">🎨</div>
+      <h4>CSS3</h4>
+      <p>Custom responsive stylesheet with CSS Variables, Flexbox and Grid layout.</p>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#fefce8; color:#ca8a04;">⚡</div>
+      <h4>JavaScript</h4>
+      <p>DOM interaction for sidebar toggle, delete confirmation and alert dismissal.</p>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#f5f3ff; color:#7c3aed;">⚙️</div>
+      <h4>ASP.NET Core</h4>
+      <p>MVC framework for routing, controller logic and Razor view rendering.</p>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#fff7ed; color:#ea580c;">📦</div>
+      <h4>Razor Views</h4>
+      <p>Server-side templating that combines C# logic with HTML output.</p>
+    </div>
+    <div class="arch-card">
+      <div class="arch-icon" style="background:#fdf2f8; color:#db2777;">🗃️</div>
+      <h4>In-Memory Store</h4>
+      <p>Static C# list used as a lightweight data store—no database required.</p>
+    </div>
+  </div>
+
+  <h3 class="subsection">1.2 MVC Design Pattern</h3>
+  <p>
+    The application follows the <strong>Model-View-Controller (MVC)</strong> architectural
+    pattern, which separates concerns into three distinct layers:
+  </p>
+  <ul>
+    <li><strong>Model</strong> – C# classes (<code>Expense</code>, <code>ExpenseStore</code>) that define data structure and business rules.</li>
+    <li><strong>View</strong> – Razor <code>.cshtml</code> files that render HTML pages dynamically from model data.</li>
+    <li><strong>Controller</strong> – C# classes (<code>HomeController</code>, <code>ExpenseController</code>) that handle HTTP requests, process input, and return appropriate views.</li>
+  </ul>
+
+  <div class="info-box">
+    <strong>Motivation:</strong> By building this application students develop problem-solving
+    skills, creativity, and a deeper understanding of web technologies—preparing them for
+    real-world challenges in web development.
+  </div>
+
+  <!-- ─────────────────────────────────────
+       2. DESIGN
+  ────────────────────────────────────── -->
+  <h2 class="section-title page-break" id="design">2. Design &amp; System Architecture</h2>
+
+  <h3 class="subsection">2.1 Project Structure</h3>
+
+  <div class="code-label"><span class="code-file">Project Layout</span></div>
+  <pre><code><span class="at">ExpenseTracker/</span>
+<span class="cm">│</span>
+<span class="kw">├── Controllers/</span>
+<span class="cm">│   ├── HomeController.cs        </span><span class="cm">// Dashboard statistics</span>
+<span class="cm">│   └── ExpenseController.cs     </span><span class="cm">// CRUD operations</span>
+<span class="kw">│</span>
+<span class="kw">├── Models/</span>
+<span class="cm">│   ├── Expense.cs               </span><span class="cm">// Data model + validation</span>
+<span class="cm">│   ├── ExpenseStore.cs          </span><span class="cm">// In-memory data store</span>
+<span class="cm">│   └── CategoryTotal.cs         </span><span class="cm">// DTO for chart data</span>
+<span class="kw">│</span>
+<span class="kw">├── Views/</span>
+<span class="cm">│   ├── _ViewImports.cshtml</span>
+<span class="cm">│   ├── _ViewStart.cshtml</span>
+<span class="cm">│   ├── Shared/</span>
+<span class="cm">│   │   └── _Layout.cshtml       </span><span class="cm">// Sidebar + Topbar layout</span>
+<span class="cm">│   ├── Home/</span>
+<span class="cm">│   │   └── Index.cshtml         </span><span class="cm">// Dashboard page</span>
+<span class="cm">│   └── Expense/</span>
+<span class="cm">│       ├── Index.cshtml         </span><span class="cm">// Expense list + filter</span>
+<span class="cm">│       ├── Create.cshtml        </span><span class="cm">// Add expense form</span>
+<span class="cm">│       └── Edit.cshtml          </span><span class="cm">// Edit expense form</span>
+<span class="kw">│</span>
+<span class="kw">├── wwwroot/</span>
+<span class="cm">│   ├── css/site.css             </span><span class="cm">// Full responsive stylesheet</span>
+<span class="cm">│   └── js/site.js               </span><span class="cm">// Client-side interactivity</span>
+<span class="kw">│</span>
+<span class="kw">├── Program.cs                   </span><span class="cm">// App entry point</span>
+<span class="kw">└── ExpenseTracker.csproj        </span><span class="cm">// .NET 10 project file</span></code></pre>
+
+  <h3 class="subsection">2.2 Application Pages</h3>
+  <table class="report-table">
+    <thead><tr><th>Route</th><th>Page</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>/</code></td><td>Dashboard</td><td>Summary cards, category bar chart, recent 5 expenses</td></tr>
+      <tr><td><code>/Expense</code></td><td>All Expenses</td><td>Full table with filter by category, date range and keyword search</td></tr>
+      <tr><td><code>/Expense/Create</code></td><td>Add Expense</td><td>Form to log a new expense record</td></tr>
+      <tr><td><code>/Expense/Edit/{id}</code></td><td>Edit Expense</td><td>Pre-filled form to update an existing record</td></tr>
+      <tr><td><code>POST /Expense/Delete/{id}</code></td><td>–</td><td>Deletes the record and redirects back to list</td></tr>
+    </tbody>
+  </table>
+
+  <h3 class="subsection">2.3 Supported Expense Categories</h3>
+  <p>Food &nbsp;·&nbsp; Transport &nbsp;·&nbsp; Shopping &nbsp;·&nbsp; Entertainment &nbsp;·&nbsp; Bills &nbsp;·&nbsp; Health &nbsp;·&nbsp; Education &nbsp;·&nbsp; Other</p>
+
+  <!-- ─────────────────────────────────────
+       3. CODE SNIPPETS
+  ────────────────────────────────────── -->
+  <h2 class="section-title page-break" id="code">3. Code Implementation</h2>
+
+  <!-- 3.1 Expense Model -->
+  <h3 class="subsection">3.1 Expense Data Model</h3>
+  <p>
+    The <code>Expense</code> class defines the structure of each expense record and uses
+    <strong>Data Annotations</strong> to enforce server-side validation automatically.
+  </p>
+  <div class="code-label"><span class="code-file">Models/Expense.cs</span></div>
+<pre><code><span class="kw">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="kw">namespace</span> ExpenseTracker.Models
+{
+    <span class="kw">public class</span> <span class="ty">Expense</span>
+    {
+        <span class="kw">public</span> <span class="ty">int</span> Id { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+        [<span class="ty">Required</span>(ErrorMessage = <span class="st">"Description is required"</span>)]
+        [<span class="ty">StringLength</span>(<span class="nu">100</span>)]
+        <span class="kw">public</span> <span class="ty">string</span> Description { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="ty">string</span>.Empty;
+
+        [<span class="ty">Required</span>(ErrorMessage = <span class="st">"Amount is required"</span>)]
+        [<span class="ty">Range</span>(<span class="nu">0.01</span>, <span class="nu">999999.99</span>, ErrorMessage = <span class="st">"Amount must be greater than 0"</span>)]
+        [<span class="ty">DataType</span>(DataType.Currency)]
+        <span class="kw">public</span> <span class="ty">decimal</span> Amount { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+        [<span class="ty">Required</span>(ErrorMessage = <span class="st">"Category is required"</span>)]
+        <span class="kw">public</span> <span class="ty">string</span> Category { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="ty">string</span>.Empty;
+
+        [<span class="ty">Required</span>(ErrorMessage = <span class="st">"Date is required"</span>)]
+        [<span class="ty">DataType</span>(DataType.Date)]
+        <span class="kw">public</span> <span class="ty">DateTime</span> Date { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="ty">DateTime</span>.Today;
+
+        <span class="kw">public</span> <span class="ty">string</span>? Notes { <span class="kw">get</span>; <span class="kw">set</span>; }
+    }
+}</code></pre>
+
+  <!-- 3.2 In-Memory Store -->
+  <h3 class="subsection">3.2 In-Memory Data Store</h3>
+  <p>
+    Instead of a database, a static list simulates persistent storage for the duration
+    of the application session—ideal for a lab demonstration.
+  </p>
+  <div class="code-label"><span class="code-file">Models/ExpenseStore.cs</span></div>
+<pre><code><span class="kw">public static class</span> <span class="ty">ExpenseStore</span>
+{
+    <span class="kw">private static int</span> _nextId = <span class="nu">1</span>;
+
+    <span class="kw">public static</span> <span class="ty">List</span>&lt;<span class="ty">Expense</span>&gt; Expenses { <span class="kw">get</span>; } = <span class="kw">new</span>()
+    {
+        <span class="kw">new</span> <span class="ty">Expense</span> { Id = _nextId++, Description = <span class="st">"Grocery shopping"</span>,
+                      Amount = <span class="nu">85.50m</span>, Category = <span class="st">"Food"</span>, Date = <span class="ty">DateTime</span>.Today.AddDays(-<span class="nu">1</span>) },
+        <span class="kw">new</span> <span class="ty">Expense</span> { Id = _nextId++, Description = <span class="st">"Bus pass"</span>,
+                      Amount = <span class="nu">30.00m</span>, Category = <span class="st">"Transport"</span>, Date = <span class="ty">DateTime</span>.Today.AddDays(-<span class="nu">2</span>) },
+        <span class="cm">// ... more seed data</span>
+    };
+
+    <span class="kw">public static readonly</span> <span class="ty">List</span>&lt;<span class="ty">string</span>&gt; Categories = <span class="kw">new</span>()
+    {
+        <span class="st">"Food"</span>, <span class="st">"Transport"</span>, <span class="st">"Shopping"</span>, <span class="st">"Entertainment"</span>,
+        <span class="st">"Bills"</span>, <span class="st">"Health"</span>, <span class="st">"Education"</span>, <span class="st">"Other"</span>
+    };
+
+    <span class="kw">public static int</span> <span class="fn">GetNextId</span>() =&gt; _nextId++;
+}</code></pre>
+
+  <!-- 3.3 Expense Controller -->
+  <h3 class="subsection">3.3 Expense Controller (CRUD)</h3>
+  <p>
+    The <code>ExpenseController</code> handles all create, read, update, and delete
+    operations. Filtering logic is applied in the <code>Index</code> action before
+    passing data to the view.
+  </p>
+  <div class="code-label"><span class="code-file">Controllers/ExpenseController.cs</span></div>
+<pre><code><span class="kw">public class</span> <span class="ty">ExpenseController</span> : <span class="ty">Controller</span>
+{
+    <span class="cm">// GET: /Expense — with optional filters</span>
+    <span class="kw">public</span> <span class="ty">IActionResult</span> <span class="fn">Index</span>(<span class="ty">string</span>? category, <span class="ty">string</span>? search,
+                                  <span class="ty">string</span>? dateFrom, <span class="ty">string</span>? dateTo)
+    {
+        <span class="kw">var</span> expenses = <span class="ty">ExpenseStore</span>.Expenses.<span class="fn">AsQueryable</span>();
+
+        <span class="kw">if</span> (!<span class="ty">string</span>.<span class="fn">IsNullOrEmpty</span>(category) &amp;&amp; category != <span class="st">"All"</span>)
+            expenses = expenses.<span class="fn">Where</span>(e =&gt; e.Category == category);
+
+        <span class="kw">if</span> (!<span class="ty">string</span>.<span class="fn">IsNullOrEmpty</span>(search))
+            expenses = expenses.<span class="fn">Where</span>(e =&gt; e.Description
+                .<span class="fn">Contains</span>(search, <span class="ty">StringComparison</span>.OrdinalIgnoreCase));
+
+        <span class="kw">if</span> (<span class="ty">DateTime</span>.<span class="fn">TryParse</span>(dateFrom, <span class="kw">out var</span> from))
+            expenses = expenses.<span class="fn">Where</span>(e =&gt; e.Date &gt;= from);
+
+        ViewBag.Total = expenses.<span class="fn">Sum</span>(e =&gt; e.Amount);
+        <span class="kw">return</span> <span class="fn">View</span>(expenses.<span class="fn">OrderByDescending</span>(e =&gt; e.Date).<span class="fn">ToList</span>());
+    }
+
+    <span class="cm">// POST: /Expense/Create</span>
+    [<span class="ty">HttpPost</span>][<span class="ty">ValidateAntiForgeryToken</span>]
+    <span class="kw">public</span> <span class="ty">IActionResult</span> <span class="fn">Create</span>(<span class="ty">Expense</span> expense)
+    {
+        <span class="kw">if</span> (<span class="fn">ModelState</span>.IsValid)
+        {
+            expense.Id = <span class="ty">ExpenseStore</span>.<span class="fn">GetNextId</span>();
+            <span class="ty">ExpenseStore</span>.Expenses.<span class="fn">Add</span>(expense);
+            TempData[<span class="st">"Success"</span>] = <span class="st">"Expense added successfully!"</span>;
+            <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="kw">nameof</span>(Index));
+        }
+        ViewBag.Categories = <span class="ty">ExpenseStore</span>.Categories;
+        <span class="kw">return</span> <span class="fn">View</span>(expense);
+    }
+
+    <span class="cm">// POST: /Expense/Delete/{id}</span>
+    [<span class="ty">HttpPost</span>][<span class="ty">ValidateAntiForgeryToken</span>]
+    <span class="kw">public</span> <span class="ty">IActionResult</span> <span class="fn">Delete</span>(<span class="ty">int</span> id)
+    {
+        <span class="kw">var</span> expense = <span class="ty">ExpenseStore</span>.Expenses.<span class="fn">FirstOrDefault</span>(e =&gt; e.Id == id);
+        <span class="kw">if</span> (expense != <span class="kw">null</span>) <span class="ty">ExpenseStore</span>.Expenses.<span class="fn">Remove</span>(expense);
+        TempData[<span class="st">"Success"</span>] = <span class="st">"Expense deleted!"</span>;
+        <span class="kw">return</span> <span class="fn">RedirectToAction</span>(<span class="kw">nameof</span>(Index));
+    }
+}</code></pre>
+
+  <!-- 3.4 Razor View -->
+  <h3 class="subsection">3.4 Razor View – Add Expense Form</h3>
+  <p>
+    Razor views combine HTML markup with C# expressions. The form below uses
+    <strong>Tag Helpers</strong> (<code>asp-for</code>, <code>asp-action</code>) to bind
+    model properties and generate anti-forgery tokens automatically.
+  </p>
+  <div class="code-label"><span class="code-file">Views/Expense/Create.cshtml  (excerpt)</span></div>
+<pre><code><span class="at">@model</span> ExpenseTracker.Models.<span class="ty">Expense</span>
+
+<span class="at">&lt;form</span> <span class="kw">asp-action</span>=<span class="st">"Create"</span> <span class="kw">method</span>=<span class="st">"post"</span> <span class="kw">class</span>=<span class="st">"expense-form"</span><span class="at">&gt;</span>
+    <span class="at">@Html.AntiForgeryToken()</span>
+
+    <span class="at">&lt;div</span> <span class="kw">class</span>=<span class="st">"form-row"</span><span class="at">&gt;</span>
+        <span class="at">&lt;div</span> <span class="kw">class</span>=<span class="st">"form-group"</span><span class="at">&gt;</span>
+            <span class="at">&lt;label</span> <span class="kw">asp-for</span>=<span class="st">"Date"</span> <span class="kw">class</span>=<span class="st">"form-label"</span><span class="at">&gt;&lt;/label&gt;</span>
+            <span class="at">&lt;input</span> <span class="kw">asp-for</span>=<span class="st">"Date"</span> <span class="kw">type</span>=<span class="st">"date"</span> <span class="kw">class</span>=<span class="st">"form-input"</span> <span class="at">/&gt;</span>
+            <span class="at">&lt;span</span> <span class="kw">asp-validation-for</span>=<span class="st">"Date"</span> <span class="kw">class</span>=<span class="st">"validation-error"</span><span class="at">&gt;&lt;/span&gt;</span>
+        <span class="at">&lt;/div&gt;</span>
+        <span class="at">&lt;div</span> <span class="kw">class</span>=<span class="st">"form-group"</span><span class="at">&gt;</span>
+            <span class="at">&lt;label</span> <span class="kw">asp-for</span>=<span class="st">"Category"</span> <span class="kw">class</span>=<span class="st">"form-label"</span><span class="at">&gt;&lt;/label&gt;</span>
+            <span class="at">&lt;select</span> <span class="kw">asp-for</span>=<span class="st">"Category"</span> <span class="kw">class</span>=<span class="st">"form-input"</span><span class="at">&gt;</span>
+                <span class="at">@foreach</span> (var cat <span class="kw">in</span> ViewBag.Categories)
+                {
+                    <span class="at">&lt;option</span> <span class="kw">value</span>=<span class="st">"@cat"</span><span class="at">&gt;</span>@cat<span class="at">&lt;/option&gt;</span>
+                }
+            <span class="at">&lt;/select&gt;</span>
+        <span class="at">&lt;/div&gt;</span>
+    <span class="at">&lt;/div&gt;</span>
+
+    <span class="at">&lt;div</span> <span class="kw">class</span>=<span class="st">"form-group"</span><span class="at">&gt;</span>
+        <span class="at">&lt;label</span> <span class="kw">asp-for</span>=<span class="st">"Amount"</span> <span class="kw">class</span>=<span class="st">"form-label"</span><span class="at">&gt;&lt;/label&gt;</span>
+        <span class="at">&lt;input</span> <span class="kw">asp-for</span>=<span class="st">"Amount"</span> <span class="kw">type</span>=<span class="st">"number"</span> <span class="kw">step</span>=<span class="st">"0.01"</span>
+               <span class="kw">class</span>=<span class="st">"form-input"</span> <span class="at">/&gt;</span>
+    <span class="at">&lt;/div&gt;</span>
+
+    <span class="at">&lt;button</span> <span class="kw">type</span>=<span class="st">"submit"</span> <span class="kw">class</span>=<span class="st">"btn btn-primary"</span><span class="at">&gt;</span>Save Expense<span class="at">&lt;/button&gt;</span>
+<span class="at">&lt;/form&gt;</span></code></pre>
+
+  <!-- 3.5 CSS -->
+  <h3 class="subsection">3.5 CSS – Design System (excerpt)</h3>
+  <p>
+    A CSS custom properties (variables) system drives the entire colour scheme and
+    spacing, making global restyling trivial.
+  </p>
+  <div class="code-label"><span class="code-file">wwwroot/css/site.css  (excerpt)</span></div>
+<pre><code><span class="cm">/* Design Tokens */</span>
+<span class="at">:root</span> {
+    <span class="kw">--primary</span>:       <span class="nu">#2563EB</span>;
+    <span class="kw">--primary-dark</span>:  <span class="nu">#1D4ED8</span>;
+    <span class="kw">--success</span>:       <span class="nu">#10B981</span>;
+    <span class="kw">--danger</span>:        <span class="nu">#EF4444</span>;
+    <span class="kw">--sidebar-width</span>: <span class="nu">240px</span>;
+    <span class="kw">--bg</span>:            <span class="nu">#F1F5F9</span>;
+    <span class="kw">--radius</span>:        <span class="nu">10px</span>;
+    <span class="kw">--shadow</span>: <span class="nu">0 1px 3px</span> rgba(<span class="nu">0,0,0,0.08</span>);
+}
+
+<span class="cm">/* Responsive grid for stat cards */</span>
+<span class="at">.cards-grid</span> {
+    display: grid;
+    grid-template-columns: repeat(<span class="nu">4</span>, <span class="nu">1fr</span>);
+    gap: <span class="nu">16px</span>;
+    margin-bottom: <span class="nu">20px</span>;
+}
+
+<span class="cm">/* Sidebar fixed layout */</span>
+<span class="at">.sidebar</span> {
+    width: var(<span class="kw">--sidebar-width</span>);
+    background: <span class="nu">#0F172A</span>;
+    position: fixed;
+    top: <span class="nu">0</span>; left: <span class="nu">0</span>;
+    min-height: <span class="nu">100vh</span>;
+    z-index: <span class="nu">100</span>;
+}
+
+<span class="cm">/* Mobile breakpoint */</span>
+<span class="at">@media</span> (max-width: <span class="nu">900px</span>) {
+    <span class="at">.sidebar</span> { transform: translateX(<span class="nu">-100%</span>); }
+    <span class="at">.sidebar.open</span> { transform: translateX(<span class="nu">0</span>); }
+    <span class="at">.main-wrapper</span> { margin-left: <span class="nu">0</span>; }
+}</code></pre>
+
+  <!-- 3.6 JavaScript -->
+  <h3 class="subsection">3.6 JavaScript</h3>
+  <div class="code-label"><span class="code-file">wwwroot/js/site.js</span></div>
+<pre><code><span class="cm">// Toggle sidebar on mobile screens</span>
+<span class="kw">function</span> <span class="fn">toggleSidebar</span>() {
+    <span class="kw">const</span> sidebar = document.<span class="fn">getElementById</span>(<span class="st">'sidebar'</span>);
+    sidebar.classList.<span class="fn">toggle</span>(<span class="st">'open'</span>);
+}
+
+<span class="cm">// Confirm before deleting a record</span>
+<span class="kw">function</span> <span class="fn">confirmDelete</span>() {
+    <span class="kw">return</span> <span class="fn">confirm</span>(<span class="st">'Are you sure you want to delete this expense?'</span>);
+}
+
+<span class="cm">// Auto-dismiss success alerts after 4 seconds</span>
+document.<span class="fn">addEventListener</span>(<span class="st">'DOMContentLoaded'</span>, <span class="kw">function</span>() {
+    <span class="kw">const</span> alert = document.<span class="fn">querySelector</span>(<span class="st">'.alert'</span>);
+    <span class="kw">if</span> (alert) {
+        <span class="fn">setTimeout</span>(() =&gt; {
+            alert.style.opacity = <span class="st">'0'</span>;
+            alert.style.transition = <span class="st">'opacity 0.4s'</span>;
+            <span class="fn">setTimeout</span>(() =&gt; alert.<span class="fn">remove</span>(), <span class="nu">400</span>);
+        }, <span class="nu">4000</span>);
+    }
+});</code></pre>
+
+  <!-- ─────────────────────────────────────
+       4. SCREENSHOTS
+  ────────────────────────────────────── -->
+  <h2 class="section-title page-break" id="screenshots">4. Output Screenshots</h2>
+
+  <h3 class="subsection">4.1 Dashboard – Summary Overview</h3>
+  <p>
+    The home page displays four summary cards (total expenses, this month's total,
+    top spending category, and total transactions), a horizontal bar chart breaking
+    down spending by category, and a list of the five most recent expenses.
+  </p>
+  <div class="screenshot-box">
+    <div class="ss-label">
+      <span class="ss-dot" style="background:#ef4444"></span>
+      <span class="ss-dot" style="background:#f59e0b"></span>
+      <span class="ss-dot" style="background:#22c55e"></span>
+      &nbsp; http://localhost:5000
+    </div>
+    <img src="images/dashboard.png" alt="Dashboard screenshot"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    <div class="img-placeholder" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Place <strong>dashboard.png</strong> in Report/images/</p>
+    </div>
+    <div class="ss-caption">Figure 1 – Dashboard showing spending summary cards and category breakdown chart</div>
+  </div>
+
+  <h3 class="subsection">4.2 Add Expense Form</h3>
+  <p>
+    Users can log a new expense by providing a date, category (from dropdown),
+    description, amount, and optional notes. All fields are validated server-side
+    before the record is saved.
+  </p>
+  <div class="screenshot-box">
+    <div class="ss-label">
+      <span class="ss-dot" style="background:#ef4444"></span>
+      <span class="ss-dot" style="background:#f59e0b"></span>
+      <span class="ss-dot" style="background:#22c55e"></span>
+      &nbsp; http://localhost:5000/Expense/Create
+    </div>
+    <img src="images/add-expense.png" alt="Add Expense screenshot"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    <div class="img-placeholder" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Place <strong>add-expense.png</strong> in Report/images/</p>
+    </div>
+    <div class="ss-caption">Figure 2 – Add Expense form with category dropdown and amount input</div>
+  </div>
+
+  <h3 class="subsection">4.3 All Expenses Table</h3>
+  <p>
+    The Expenses page presents a filterable, sortable table of all records. Users
+    can narrow results by category, date range, or keyword search, and perform
+    inline edit or delete on any record.
+  </p>
+  <div class="screenshot-box">
+    <div class="ss-label">
+      <span class="ss-dot" style="background:#ef4444"></span>
+      <span class="ss-dot" style="background:#f59e0b"></span>
+      <span class="ss-dot" style="background:#22c55e"></span>
+      &nbsp; http://localhost:5000/Expense
+    </div>
+    <img src="images/all-expenses.png" alt="All Expenses screenshot"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+    <div class="img-placeholder" style="display:none">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/>
+        <polyline points="21 15 16 10 5 21"/>
+      </svg>
+      <p>Place <strong>all-expenses.png</strong> in Report/images/</p>
+    </div>
+    <div class="ss-caption">Figure 3 – Expense list with filter bar, category badges and action buttons</div>
+  </div>
+
+  <!-- ─────────────────────────────────────
+       5. REFLECTION
+  ────────────────────────────────────── -->
+  <h2 class="section-title page-break" id="reflection">5. Reflection Report</h2>
+
+  <h3 class="subsection">5.1 Challenges Faced</h3>
+
+  <div class="challenge-grid">
+    <div class="challenge-card">
+      <div class="ch-num">1</div>
+      <h4>Razor Expression Syntax</h4>
+      <p>Calling <code>.ToString("N2")</code> outside a cast expression rendered as literal text. Fixed by wrapping the entire expression inside <code>@("$" + value.ToString("N2"))</code>.</p>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-num">2</div>
+      <h4>ViewImports File Location</h4>
+      <p>Placing <code>_ViewImports.cshtml</code> inside <code>Views/Shared/</code> instead of <code>Views/</code> caused tag helpers and namespaces to fail for all non-shared views, breaking CSS links and form binding.</p>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-num">3</div>
+      <h4>HTTPS Redirect on HTTP-Only Server</h4>
+      <p><code>UseHttpsRedirection()</code> redirected traffic to a HTTPS port that was never started, producing an HTTP 403 error. Removed the middleware to serve the app over plain HTTP in development.</p>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-num">4</div>
+      <h4>Dynamic vs Typed ViewBag</h4>
+      <p>Using anonymous types with <code>dynamic</code> in ViewBag caused runtime failures inside Razor views. Introduced a concrete <code>CategoryTotal</code> DTO class to allow strongly-typed access.</p>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-num">5</div>
+      <h4>Razor Option Selected Attribute</h4>
+      <p>The Razor error <em>RZ1031: tag helper must not have C# in attribute</em> occurred when using an inline ternary for <code>selected</code>. Replaced with an explicit <code>@if / else</code> block.</p>
+    </div>
+    <div class="challenge-card">
+      <div class="ch-num">6</div>
+      <h4>Target Framework Mismatch</h4>
+      <p>The project initially targeted <code>net8.0</code> while only .NET 10 SDK was installed, causing a slow workload resolution warning. Updated the <code>.csproj</code> to <code>net10.0</code>.</p>
+    </div>
+  </div>
+
+  <h3 class="subsection">5.2 Potential Improvements</h3>
+  <ul>
+    <li><strong>Database Integration</strong> – Replace the in-memory store with Entity Framework Core + SQLite/SQL Server for true data persistence across sessions.</li>
+    <li><strong>User Authentication</strong> – Add ASP.NET Core Identity so each user has a private set of expense records.</li>
+    <li><strong>Budget Alerts</strong> – Allow users to set monthly spending limits per category and receive visual warnings when approaching or exceeding the limit.</li>
+    <li><strong>Interactive Charts</strong> – Integrate Chart.js to render animated pie/doughnut and line-trend charts instead of CSS-only bar charts.</li>
+    <li><strong>Data Export</strong> – Add CSV / PDF export functionality so users can analyse their data in Excel or share it with an accountant.</li>
+    <li><strong>Advanced Analytics</strong> – Display week-over-week and month-over-month spending trends, and predict future expenditure using simple moving averages.</li>
+  </ul>
+
+  <h3 class="subsection">5.3 Discussion on Results</h3>
+  <p>
+    The web-based expense tracker successfully met all primary objectives defined in the
+    problem statement. The application provides users with a clean, responsive interface
+    to log daily expenses, assign them to meaningful categories, and view both detailed
+    records and high-level summaries on the dashboard.
+  </p>
+  <p>
+    The category bar chart offers an immediate visual understanding of where money is
+    being spent, while the filter and search capabilities on the expenses table allow
+    users to quickly isolate specific transactions by date range or keyword. The edit
+    and delete functionality ensures records remain accurate over time.
+  </p>
+  <p>
+    From a technical standpoint, the project reinforced key ASP.NET Core MVC concepts
+    including routing conventions, model binding, data annotations for validation,
+    anti-forgery tokens for security, and the Razor view engine. The CSS design system
+    built with custom properties and CSS Grid demonstrates how a consistent, scalable
+    stylesheet can be authored without any third-party framework.
+  </p>
+  <p>
+    Overall, the application fulfils the brief and provides a solid foundation upon
+    which real-world features—persistent storage, user accounts, and rich analytics—
+    could be built in a production context.
+  </p>
+
+  <!-- ─────────────────────────────────────
+       6. REFERENCES
+  ────────────────────────────────────── -->
+  <h2 class="section-title" id="references">6. References</h2>
+
+  <div class="ref-item">
+    <div class="ref-num">[1]</div>
+    <div class="ref-text">
+      Reid, M. (2020). <em>Developing Web Applications with ASP.NET Core and Entity Framework Core.</em>
+      Packt Publishing. A comprehensive guide on building web-based applications using the ASP.NET Core framework.
+    </div>
+  </div>
+  <div class="ref-item">
+    <div class="ref-num">[2]</div>
+    <div class="ref-text">
+      Bergheim, B. D., Garrett, D. M., &amp; Maki, D. M. (2001). Education and Saving: The Long-Term
+      Effects of High School Financial Curriculum Mandates. <em>Journal of Public Economics, 80</em>(3), 435–465.
+      Explores the impact of financial education on spending habits and savings behaviour.
+    </div>
+  </div>
+  <div class="ref-item">
+    <div class="ref-num">[3]</div>
+    <div class="ref-text">
+      Microsoft. (2024). <em>ASP.NET Core MVC Documentation.</em>
+      Retrieved from https://learn.microsoft.com/en-us/aspnet/core/mvc/overview
+    </div>
+  </div>
+  <div class="ref-item">
+    <div class="ref-num">[4]</div>
+    <div class="ref-text">
+      MDN Web Docs. (2024). <em>CSS Custom Properties (Variables).</em>
+      Retrieved from https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties
+    </div>
+  </div>
+
+  <hr class="divider"/>
+  <p style="text-align:center; color:#94a3b8; font-size:10.5pt;">
+    End of Lab Report &nbsp;·&nbsp; Lab Session 7 – Open-Ended Lab &nbsp;·&nbsp; June 2026
+  </p>
+
+</div>
+
+<div class="report-footer">
+  Customer Record Management System &nbsp;·&nbsp; Expense Tracker &nbsp;·&nbsp; ASP.NET Core 10 MVC
+</div>
+
+</body>
+</html>

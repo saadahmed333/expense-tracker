@@ -30,3 +30,4 @@
 /Users/smarttech/Desktop/Web Lab/obj/Debug/net10.0/ExpenseTracker.pdb
 /Users/smarttech/Desktop/Web Lab/obj/Debug/net10.0/ExpenseTracker.genruntimeconfig.cache
 /Users/smarttech/Desktop/Web Lab/obj/Debug/net10.0/ref/ExpenseTracker.dll
+/Users/smarttech/Desktop/Web Lab/obj/Debug/net10.0/ExpenseTracker.sourcelink.json
